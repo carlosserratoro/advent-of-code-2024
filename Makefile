@@ -6,9 +6,11 @@
 install:
 	@pip install -e src
 
-black:
-	@black src/
-	@black tests/
+lint:
+	@isort src/ tests/
+	@black src/ tests/
+	@flake8 src/ tests/
+	@pylint src/ tests/
 
 test:
 ifdef day
