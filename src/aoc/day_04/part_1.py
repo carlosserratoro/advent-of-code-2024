@@ -3,18 +3,10 @@
 from functools import lru_cache
 from pathlib import Path
 
-from aoc.common import get_lines
+from aoc.common import get_lines, yield_matrix_positions
 
 # The directions in which we can move: cardinal points.
 DIRECTIONS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
-
-
-def yield_positions(matrix):
-    """Generate a stream of positions (row, column) from a matrix."""
-    num_rows, num_cols = len(matrix), len(matrix[0])
-    for num_row in range(num_rows):
-        for num_col in range(num_cols):
-            yield num_row, num_col
 
 
 @lru_cache(maxsize=len(DIRECTIONS))
@@ -65,7 +57,7 @@ def get_num_words(lines, word):
     for line in lines:
         matrix.append(line)
 
-    for start in yield_positions(matrix):
+    for start in yield_matrix_positions(matrix):
         for direction in DIRECTIONS:
             if word_found(matrix, start, direction, word):
                 num_words += 1
