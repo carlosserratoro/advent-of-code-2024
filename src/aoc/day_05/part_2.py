@@ -9,29 +9,22 @@ from aoc.day_05.part_1 import pages_sorted_correctly
 
 
 def sort_pages(rules: DAG, pages: list):
+    """Sort the pages according to the rules given."""
 
     # Build a smaller DAG with only the rules that affect us.
-    # This will speed up the search of the path.
+    # Due to the wording of the problem limiting the order to be
+    # defined by explicit rules (i.e. edges in our case), we can
+    # filter out all the others, being sure no indirect order can
+    # be obtained from them (not because it's not possible, but
+    # because  the problem limits it on purpose). This allows us
+    # to use a topological sorting with the guarantee that it'll
+    # be unique, which allows us to get the sorted sequence.
     useful_rules = DAG()
-    for i, page_i in enumerate(pages):
-        for j, page_j in enumerate(pages):
-            page_j = pages[j]
+    for page_i in pages:
+        for page_j in pages:
             if rules.edge_exists(page_i, page_j):
                 useful_rules.add_edge(page_i, page_j)
-
-    for i, page_i in enumerate(pages):
-        for j, page_j in enumerate(pages):
-            if i != j:
-                paths = useful_rules.paths(
-                    page_i,
-                    page_j,
-                    valid_nodes=set(pages),
-                )
-                for path in paths:
-                    if path and set(path) == set(pages):
-                        return path
-
-    return False
+    return useful_rules.topsort()
 
 
 def get_sum_middle_pages(lines):

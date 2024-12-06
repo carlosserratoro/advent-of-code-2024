@@ -71,16 +71,12 @@ def test_get_neighbours():
     assert not dag.get_neighbours(3)
 
 
-def test_paths():
+def test_topological_sort():
     dag = DAG()
     dag.add_edge(1, 2)
+    dag.add_edge(1, 3)
+    dag.add_edge(1, 4)
     dag.add_edge(2, 3)
-    dag.add_edge(2, 4)
-    dag.add_edge(4, 5)
-    dag.add_edge(6, 7)
-    dag.add_edge(3, 5)
-    assert set(dag.paths(1, 2, valid_nodes={1, 2})) == {(1, 2)}
-    assert set(dag.paths(1, 5, valid_nodes={1, 2, 3, 5})) == {(1, 2, 3, 5)}
-    assert set(dag.paths(1, 5, valid_nodes={1, 2, 4, 5})) == {(1, 2, 4, 5)}
-    assert set(dag.paths(1, 5, valid_nodes={1, 2, 5, 7})) == set()
-    assert set(dag.paths(1, 7, valid_nodes={1, 2, 3, 4, 5, 6, 7})) == set()
+    dag.add_edge(3, 4)
+    dag.add_edge(3, 4)
+    assert dag.topsort() == [1, 2, 3, 4]

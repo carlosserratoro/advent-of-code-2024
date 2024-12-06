@@ -31,38 +31,25 @@ class DAG:
     def get_neighbours(self, v):
         return tuple(self._g.get(v, []))
 
-    def paths(self, v, w, valid_nodes):
-        """Return the paths between v and w, if any exist."""
-        paths_found = []
-        self._paths(
-            v,
-            w,
-            valid_nodes=valid_nodes,
-            visited=set(),
-            path=[],
-            paths_found=paths_found,
-        )
-        return paths_found
+    def topsort(self):
+        """Perform a topological sort.
 
-    def _paths(self, v, w, valid_nodes, visited, path, paths_found):
-        """Compute the paths using a DFS."""
-        # pylint: disable=R0913,R0917
-        path.append(v)
-        visited.add(v)
-        if v == w and len(path) == len(valid_nodes):
-            path_found = tuple(path)
-            paths_found.append(path_found)
-        else:
+        Implemented using a DFS.
+        """
+
+        def _dfs(v, visited, inverse_topsort):
+            visited.add(v)
             for neighbour in self._g[v]:
-                if (
-                    neighbour not in visited
-                    and neighbour in valid_nodes
-                    and len(path) + 1 <= len(valid_nodes)
-                ):
-                    self._paths(neighbour, w, valid_nodes, visited, path, paths_found)
+                if neighbour not in visited:
+                    _dfs(neighbour, visited, inverse_topsort)
+            inverse_topsort.append(v)
 
-        path.pop()
-        visited.remove(v)
+        visited = set()
+        inverse_topsort = []
+        for node in self._g:
+            if node not in visited:
+                _dfs(node, visited, inverse_topsort)
+        return list(reversed(inverse_topsort))
 
     # Note on the methods successors and predecessors for Day 5:
     # At first I misunderstood what the problem required and thought
