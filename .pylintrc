@@ -1,5 +1,5 @@
 [master]
-disable = C0114,C0115,C0116
+disable = C0114,C0115,C0116,R1735
 
 [format]
 max-line-length = 88
