@@ -1,7 +1,7 @@
 # Authored by Carlos Serra-Toro (https://carlosserratoro.com)
 # See the file LICENSE for the licence
 
-.PHONY: test_all run_script run_black
+.PHONY: install lint test test_no_solution run
 
 install:
 	@pip install -e src
@@ -17,6 +17,13 @@ ifdef day
 	@python -m pytest tests/day_$(day)
 else
 	@python -m pytest tests
+endif
+
+test_no_solution:
+ifdef day
+	@python -m pytest -m "not solution" tests/day_$(day)
+else
+	@python -m pytest -m "not solution" tests
 endif
 
 run:
